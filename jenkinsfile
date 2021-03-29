@@ -1,0 +1,47 @@
+pipeline {
+	agent any
+	tools {
+		maven 'M2.6'
+	}
+	stages {
+		stage('Checkout') {
+		steps {
+			git 'https://github.com/akmaharshi/petclinic.git'
+			}
+		}
+
+		stage('Build') {
+		steps {
+			sh 'mvn clean package'
+			}
+		}
+	
+		stage('Archival') {
+		steps {
+			archiveArtifacts artifacts: 'target/*.?ar', followSymlinks: false
+			}
+		}
+
+		stage('Unit Tests') {
+		steps {
+			junit 'target/surefire-reports/*.xml'
+			}
+		}
+	}
+    post {
+	     success {
+			notify('Success')
+			}
+		failure{
+			notify('failed')
+	    }
+	}
+}
+
+def notify(status) {
+	emailext (
+		to: 'devops.kphb@gmail.com',
+		subject: "${status} - ${env.JOB_NAME}",
+		body: "$status - Jenkins job ${env.BUILD_URL}"
+	)
+}
