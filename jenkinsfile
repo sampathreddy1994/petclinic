@@ -4,13 +4,8 @@ pipeline {
 		maven 'M2.6'
 	}
 	stages {
-		stage('Checkout') {
-		steps {
-			git 'https://github.com/akmaharshi/petclinic.git'
-			}
-		}
-
-		stage('Build') {
+	
+	        stage('Build') {
 		steps {
 			sh 'mvn clean package'
 			}
